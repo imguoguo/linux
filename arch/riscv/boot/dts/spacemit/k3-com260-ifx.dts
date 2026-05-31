@@ -21,6 +21,10 @@
 	};
 };
 
+&pdma {
+	status = "okay";
+};
+
 &spi0 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&ssp0_2_cfg>;
