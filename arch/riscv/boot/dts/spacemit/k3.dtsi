@@ -587,7 +587,7 @@
 		};
 
 		pdma: dma-controller@d4000000 {
-			compatible = "spacemit,k3-pdma";
+			compatible = "spacemit,k1-pdma";
 			reg = <0x0 0xd4000000 0x0 0x4000>;
 			clocks = <&syscon_apmu CLK_APMU_DMA>;
 			resets = <&syscon_apmu RESET_APMU_DMA>;
