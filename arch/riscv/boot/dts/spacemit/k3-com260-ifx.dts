@@ -13,9 +13,26 @@
 	aliases {
 		serial0 = &uart0;
 		ethernet0 = &eth1;
+		spi0 = &spi0;
 	};
 
 	chosen {
 		stdout-path = "serial0:115200n8";
+	};
+};
+
+&pdma {
+	status = "okay";
+};
+
+&spi0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&ssp0_2_cfg>;
+	status = "okay";
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <1000000>;
 	};
 };
