@@ -5,8 +5,9 @@
  */
 
 #include <dt-bindings/clock/spacemit,k3-clocks.h>
-#include <dt-bindings/reset/spacemit,k3-resets.h>
+#include <dt-bindings/dma/spacemit,k3-pdma.h>
 #include <dt-bindings/interrupt-controller/irq.h>
+#include <dt-bindings/reset/spacemit,k3-resets.h>
 
 /dts-v1/;
 
@@ -1090,7 +1091,7 @@
 			clock-names = "core", "bus";
 			resets = <&syscon_apbc RESET_APBC_SPI0>;
 			interrupts = <283 IRQ_TYPE_LEVEL_HIGH>;
-			dmas = <&pdma 65>, <&pdma 64>;
+			dmas = <&pdma K3_PDMA_SSP0_RX>, <&pdma K3_PDMA_SSP0_TX>;
 			dma-names = "rx", "tx";
 			status = "disabled";
 		};
@@ -1105,7 +1106,7 @@
 			clock-names = "core", "bus";
 			resets = <&syscon_apbc RESET_APBC_SPI1>;
 			interrupts = <282 IRQ_TYPE_LEVEL_HIGH>;
-			dmas = <&pdma 67>, <&pdma 66>;
+			dmas = <&pdma K3_PDMA_SSP1_RX>, <&pdma K3_PDMA_SSP1_TX>;
 			dma-names = "rx", "tx";
 			status = "disabled";
 		};
@@ -1120,7 +1121,7 @@
 			clock-names = "core", "bus";
 			resets = <&syscon_apbc RESET_APBC_SPI3>;
 			interrupts = <55 IRQ_TYPE_LEVEL_HIGH>;
-			dmas = <&pdma 20>, <&pdma 19>;
+			dmas = <&pdma K3_PDMA_SSP3_RX>, <&pdma K3_PDMA_SSP3_TX>;
 			dma-names = "rx", "tx";
 			status = "disabled";
 		};
