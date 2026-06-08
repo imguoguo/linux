@@ -38,8 +38,8 @@ properties:
     const: 1
     description:
       The single cell is the DMA request number for the peripheral device.
-      See <dt-bindings/dma/spacemit,k1-pdma.h> for the list of valid request
-      numbers.
+      For K1, see <dt-bindings/dma/spacemit,k1-pdma.h> for the list of valid
+      request numbers. For K3, see <dt-bindings/dma/spacemit,k3-pdma.h>.
 
 required:
   - compatible
