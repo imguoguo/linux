@@ -1,0 +1,152 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/display/spacemit/spacemit,k3-inno-dp.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: SpaceMiT K3 Innosilicon DisplayPort / embedded DisplayPort Controller
+
+maintainers:
+  - Cody Kang <cody.kang.hk@outlook.com>
+
+description:
+  The K3 SoC integrates two Innosilicon DP/eDP controller instances - one
+  drives the eDP panel path at 0xcac84000 and the other drives the external
+  DP connector at 0xcac88000. Both instances share a single compatible
+  string; eDP vs DP is determined by whether the downstream port is wired
+  to a panel or a connector.
+
+properties:
+  compatible:
+    const: spacemit,k3-inno-dp
+
+  reg:
+    maxItems: 1
+
+  interrupts:
+    maxItems: 1
+
+  clocks:
+    items:
+      - description: Pixel clock - the APMU eDP pixel-clock mux output.
+      - description:
+          The DP PHY PLL pixel clock, selected as the pixel-clock mux
+          parent at probe via clk_set_parent().
+
+  clock-names:
+    items:
+      - const: pxclk
+      - const: pll
+
+  resets:
+    maxItems: 1
+    description: Controller-wide reset signal.
+
+  phys:
+    maxItems: 1
+    description: Phandle to the K3 Innosilicon DP PHY.
+
+  phy-names:
+    items:
+      - const: dp
+
+  spacemit,qos:
+    $ref: /schemas/types.yaml#/definitions/phandle
+    description: |
+      Phandle to a syscon covering the per-SoC DP QoS / mux block. Required
+      only on the DPU0/eDP0 instance, which uses one bit of QOS_MUX_CTRL
+      to route DPU0 output to the eDP0 TX. Optional on DPU1/DP1.
+
+  ports:
+    $ref: /schemas/graph.yaml#/properties/ports
+
+    properties:
+      port@0:
+        $ref: /schemas/graph.yaml#/properties/port
+        description: Video input from the DPU.
+
+      port@1:
+        $ref: /schemas/graph.yaml#/properties/port
+        description: |
+          DisplayPort / eDP output. Connects to a panel (eDP) or a DP
+          connector (DP) downstream.
+
+    required:
+      - port@0
+
+  aux-bus:
+    $ref: /schemas/display/dp-aux-bus.yaml#
+    description:
+      AUX-bus subnode hosting a panel-edp child on the eDP instance.
+      The controller calls devm_of_dp_aux_populate_bus() so panel-edp
+      can identify itself via DPCD. Optional on the DP instance, where
+      the downstream port is a connector rather than a panel.
+
+patternProperties:
+  "^phy(@[0-9a-f]+)?$":
+    type: object
+    description:
+      Innosilicon DP PHY child node sharing this controller's MMIO
+      window. See Documentation/devicetree/bindings/phy/spacemit,k3-inno-dp-phy.yaml.
+
+required:
+  - compatible
+  - reg
+  - interrupts
+  - clocks
+  - clock-names
+  - resets
+  - phys
+  - phy-names
+  - ports
+
+additionalProperties: false
+
+examples:
+  - |
+    #include <dt-bindings/clock/spacemit,k3-clocks.h>
+    #include <dt-bindings/reset/spacemit,k3-resets.h>
+    #include <dt-bindings/interrupt-controller/irq.h>
+
+    soc {
+        #address-cells = <2>;
+        #size-cells = <2>;
+
+        edp@cac84000 {
+            compatible = "spacemit,k3-inno-dp";
+            reg = <0x0 0xcac84000 0x0 0x4000>;
+            interrupts = <132 IRQ_TYPE_LEVEL_HIGH>;
+            clocks = <&syscon_apmu CLK_APMU_EDP0_PXCLK>, <&edp0_phy>;
+            clock-names = "pxclk", "pll";
+            resets = <&syscon_apmu RESET_APMU_EDP0>;
+            phys = <&edp0_phy>;
+            phy-names = "dp";
+            spacemit,qos = <&syscon_qos>;
+
+            edp0_phy: phy {
+                compatible = "spacemit,k3-inno-dp-phy";
+                #phy-cells = <0>;
+                #clock-cells = <0>;
+                clock-output-names = "edp0_pll_pxclk";
+            };
+
+            ports {
+                #address-cells = <1>;
+                #size-cells = <0>;
+
+                port@0 {
+                    reg = <0>;
+                    endpoint {
+                        remote-endpoint = <&dpu0_out>;
+                    };
+                };
+
+                port@1 {
+                    reg = <1>;
+                    endpoint {
+                        remote-endpoint = <&panel_in>;
+                    };
+                };
+            };
+        };
+    };
