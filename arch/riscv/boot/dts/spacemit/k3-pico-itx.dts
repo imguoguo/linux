@@ -7,6 +7,7 @@
 
 #include "k3.dtsi"
 #include "k3-pinctrl.dtsi"
+#include "k3-display.dtsi"
 
 / {
 	model = "SpacemiT K3 Pico-ITX";
@@ -39,6 +40,25 @@
 		regulator-name = "AUX_VCC5V";
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
+		regulator-always-on;
+	};
+
+	backlight: backlight {
+		compatible = "pwm-backlight";
+		pwms = <&pwm18 0 20000 0>;
+		brightness-levels = <0 16 32 48 64 80 96 112 128
+				     144 160 176 192 208 224 240 255>;
+		default-brightness-level = <8>;
+	};
+
+	reg_edp_panel_vcc: regulator-edp-panel-vcc {
+		compatible = "regulator-fixed";
+		regulator-name = "EDP_PANEL_VCC";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&gpio 3 5 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-boot-on;
 		regulator-always-on;
 	};
 };
@@ -219,5 +239,64 @@
 };
 
 &usb2_phy {
+	status = "okay";
+};
+
+&dpu0_crtc0 {
+	status = "okay";
+};
+
+&edp0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&dp0_1_cfg>;
+	status = "okay";
+
+	aux-bus {
+		panel {
+			compatible = "edp-panel";
+			power-supply = <&reg_edp_panel_vcc>;
+			enable-gpios = <&gpio 3 22 GPIO_ACTIVE_HIGH>;
+			backlight = <&backlight>;
+			no-hpd;
+
+			port {
+				panel_in: endpoint {
+					remote-endpoint = <&edp0_out>;
+				};
+			};
+		};
+	};
+
+	ports {
+		port@1 {
+			reg = <1>;
+			edp0_out: endpoint {
+				remote-endpoint = <&panel_in>;
+			};
+		};
+	};
+};
+
+&pwm18_2_cfg {
+	pwm18-2-pins {
+		/* backlight pad: 3.3 V rail, strong pull-up */
+		bias-pull-up;
+		power-source = <3300>;
+	};
+};
+
+&pwm18 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pwm18_2_cfg>;
+	status = "okay";
+};
+
+&dpu1_crtc0 {
+	status = "okay";
+};
+
+&dp1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&dp1_1_cfg>;
 	status = "okay";
 };
