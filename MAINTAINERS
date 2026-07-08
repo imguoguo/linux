@@ -25434,6 +25434,13 @@ F:	Documentation/devicetree/bindings/phy/spacemit,k3-inno-dp-phy.yaml
 F:	drivers/gpu/drm/spacemit/
 F:	drivers/phy/spacemit/phy-spacemit-k3-inno-dp.c
 
+SPACEMIT K3 POWER DOMAIN DRIVER
+M:	Cody Kang <cody.kang.hk@outlook.com>
+L:	linux-riscv@lists.infradead.org
+S:	Maintained
+F:	Documentation/devicetree/bindings/power/spacemit,k3-power-controller.yaml
+F:	drivers/soc/spacemit/pm_domain/
+
 SPANISH DOCUMENTATION
 M:	Carlos Bilbao <carlos.bilbao@kernel.org>
 R:	Avadhut Naik <avadhut.naik@amd.com>

@@ -84,6 +84,7 @@ required:
   - clock-names
   - resets
   - reset-names
+  - power-domains
   - ports
 
 additionalProperties: false
@@ -91,6 +92,7 @@ additionalProperties: false
 examples:
   - |
     #include <dt-bindings/clock/spacemit,k3-clocks.h>
+    #include <dt-bindings/pmu/k3_pmu.h>
     #include <dt-bindings/reset/spacemit,k3-resets.h>
     #include <dt-bindings/interrupt-controller/irq.h>
 
@@ -116,6 +118,7 @@ examples:
                      <&syscon_apmu RESET_APMU_DPU_ACLK>,
                      <&syscon_apmu RESET_APMU_LCD_DSCCLK>;
             reset-names = "mclk", "lcd", "esc", "aclk", "dsc";
+            power-domains = <&power K3_PMU_LCD0_PWR_DOMAIN>;
 
             ports {
                 #address-cells = <1>;

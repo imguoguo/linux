@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: GPL-2.0-only
+
+config SOC_SPACEMIT_K3
+bool "Spacemit K3 SoC support"
+depends on ARCH_SPACEMIT || COMPILE_TEST
+default y if ARCH_SPACEMIT
+help
+  Enable support for Spacemit K3 SoC power domain management.
+  This driver provides generic power domain control over RPMI mailbox.
+
+if SOC_SPACEMIT_K3
+
+config SPACEMIT_K3_PM_DOMAIN
+tristate "Spacemit K3 power domain driver"
+depends on MAILBOX
+select PM_GENERIC_DOMAINS
+default y
+help
+  Say Y to enable power domain support for Spacemit K3 SoCs.
+  This allows the kernel to manage power domains via RPMI protocol.
+
+endif

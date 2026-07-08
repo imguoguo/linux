@@ -242,6 +242,51 @@
 	status = "okay";
 };
 
+&soc {
+	mpxy_mbox: mailbox {
+		compatible = "riscv,sbi-mpxy-mbox";
+		#mbox-cells = <2>;
+	};
+
+	power: power-controller {
+		compatible = "spacemit,power-controller";
+		mboxes = <&mpxy_mbox 0x9 0x0>;
+		#power-domain-cells = <1>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		vpu_pd: vpu@0 {
+			reg = <K3_PMU_VPU_PWR_DOMAIN>;
+			#power-domain-cells = <0>;
+		};
+
+		gpu_pd: gpu@1 {
+			reg = <K3_PMU_GPU_PWR_DOMAIN>;
+			#power-domain-cells = <0>;
+		};
+
+		aud_pd: audio@2 {
+			reg = <K3_PMU_AUD_PWR_DOMAIN>;
+			#power-domain-cells = <0>;
+		};
+
+		lcd0_pd: lcd@3 {
+			reg = <K3_PMU_LCD0_PWR_DOMAIN>;
+			#power-domain-cells = <0>;
+		};
+
+		lcd1_pd: lcd@4 {
+			reg = <K3_PMU_LCD1_PWR_DOMAIN>;
+			#power-domain-cells = <0>;
+		};
+
+		dummy_pd: dummy@5 {
+			reg = <K3_PMU_DUMMY_PWR_DOMAIN>;
+			#power-domain-cells = <0>;
+		};
+	};
+};
+
 &dpu0_crtc0 {
 	status = "okay";
 };

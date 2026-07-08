@@ -7,6 +7,7 @@
  */
 
 #include <dt-bindings/clock/spacemit,k3-clocks.h>
+#include <dt-bindings/pmu/k3_pmu.h>
 #include <dt-bindings/reset/spacemit,k3-resets.h>
 #include <dt-bindings/interrupt-controller/irq.h>
 
@@ -30,6 +31,7 @@
 			 <&syscon_apmu RESET_APMU_LCD_DSCCLK>;
 		reset-names = "mclk", "lcd", "esc",
 			      "aclk", "dsc";
+		power-domains = <&power K3_PMU_LCD0_PWR_DOMAIN>;
 		status = "disabled";
 
 		ports {
@@ -101,6 +103,7 @@
 			 <&syscon_apmu RESET_APMU_DSI4LN2_LCD_DSCCLK>;
 		reset-names = "mclk", "lcd", "esc",
 			      "aclk", "dsc";
+		power-domains = <&power K3_PMU_LCD1_PWR_DOMAIN>;
 		status = "disabled";
 
 		ports {

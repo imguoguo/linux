@@ -1,0 +1,105 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/power/spacemit,k3-power-controller.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: SpaceMiT K3 RPMI Power Domain Controller
+
+maintainers:
+  - Cody Kang <cody.kang.hk@outlook.com>
+
+description:
+  The K3 SoC routes power-island control to the platform management firmware
+  via the RISC-V Platform Management Interface (RPMI), reached through an
+  SBI-MPXY mailbox channel. This node aggregates the firmware-exposed
+  domains (VPU, GPU, audio, LCD0, LCD1) and presents them to consumers as
+  generic power domains identified by the domain IDs in
+  dt-bindings/pmu/k3_pmu.h.
+
+properties:
+  $nodename:
+    pattern: '^power-controller(@.+)?$'
+
+  compatible:
+    const: spacemit,k3-power-controller
+
+  mboxes:
+    maxItems: 1
+    description: |
+      SBI-MPXY mailbox channel reaching the RPMI device-power-domain service
+      group on the platform management firmware.
+
+  "#power-domain-cells":
+    const: 1
+
+  "#address-cells":
+    const: 1
+
+  "#size-cells":
+    const: 0
+
+patternProperties:
+  "^(audio|gpu|lcd|vpu)@[0-9a-f]+$":
+    type: object
+    description: Per-domain leaf node.
+
+    properties:
+      reg:
+        maxItems: 1
+        description: Domain ID, matching a K3_PMU_*_PWR_DOMAIN constant.
+
+      "#power-domain-cells":
+        const: 0
+
+    required:
+      - reg
+      - "#power-domain-cells"
+
+    additionalProperties: false
+
+required:
+  - compatible
+  - mboxes
+  - "#power-domain-cells"
+  - "#address-cells"
+  - "#size-cells"
+
+additionalProperties: false
+
+examples:
+  - |
+    #include <dt-bindings/pmu/k3_pmu.h>
+
+    power-controller {
+        compatible = "spacemit,k3-power-controller";
+        mboxes = <&mpxy_mbox 0x9 0x0>;
+        #power-domain-cells = <1>;
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        vpu@0 {
+            reg = <K3_PMU_VPU_PWR_DOMAIN>;
+            #power-domain-cells = <0>;
+        };
+
+        gpu@1 {
+            reg = <K3_PMU_GPU_PWR_DOMAIN>;
+            #power-domain-cells = <0>;
+        };
+
+        audio@2 {
+            reg = <K3_PMU_AUD_PWR_DOMAIN>;
+            #power-domain-cells = <0>;
+        };
+
+        lcd@3 {
+            reg = <K3_PMU_LCD0_PWR_DOMAIN>;
+            #power-domain-cells = <0>;
+        };
+
+        lcd@4 {
+            reg = <K3_PMU_LCD1_PWR_DOMAIN>;
+            #power-domain-cells = <0>;
+        };
+    };
