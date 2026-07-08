@@ -15,3 +15,15 @@ config DRM_SPACEMIT
 	  Choose this option if you have a SPACEMIT chipsets.
 	  If M is selected the module will be called spacemit-drm.
 
+config SPACEMIT_INNO_DP
+	tristate "Spacemit specific extensions for inno dp/edp"
+	depends on DRM_SPACEMIT
+	select DRM_BRIDGE_CONNECTOR
+	select DRM_DISPLAY_HELPER
+	select DRM_DISPLAY_DP_HELPER
+	select DRM_DISPLAY_DP_AUX_BUS
+	default n
+	help
+	  Support for Spacemit SoC specific extensions for
+	  the Innosilicon dp/edp driver.
+
