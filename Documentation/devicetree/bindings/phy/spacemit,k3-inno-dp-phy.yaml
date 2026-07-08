@@ -1,0 +1,60 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/phy/spacemit,k3-inno-dp-phy.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: SpaceMiT K3 Innosilicon DisplayPort PHY
+
+maintainers:
+  - Cody Kang <cody.kang.hk@outlook.com>
+
+description:
+  Innosilicon four-lane DisplayPort transmit PHY integrated in the K3 SoC.
+  One instance per K3 Innosilicon DP / eDP controller. The PHY registers
+  are interleaved with the controller's own registers inside the same
+  16 KiB MMIO window, so the PHY node is described as a child of its
+  parent DP controller node and the driver shares the controller's
+  regmap-mmio at probe time. The child has no reg or reset of its own
+  (the parent owns those), but it exposes its PLL-generated pixel clock
+  so the SoC APMU eDP pixel-clock mux can select it as a parent.
+
+properties:
+  compatible:
+    const: spacemit,k3-inno-dp-phy
+
+  "#phy-cells":
+    const: 0
+
+  "#clock-cells":
+    const: 0
+
+  clock-output-names:
+    maxItems: 1
+
+required:
+  - compatible
+  - "#phy-cells"
+  - "#clock-cells"
+
+additionalProperties: false
+
+examples:
+  - |
+    soc {
+        #address-cells = <2>;
+        #size-cells = <2>;
+
+        edp@cac84000 {
+            compatible = "spacemit,k3-inno-dp";
+            reg = <0x0 0xcac84000 0x0 0x4000>;
+            /* parent properties omitted for brevity */
+
+            edp0_phy: phy {
+                compatible = "spacemit,k3-inno-dp-phy";
+                #phy-cells = <0>;
+                #clock-cells = <0>;
+                clock-output-names = "edp0_pll_pxclk";
+            };
+        };
+    };
