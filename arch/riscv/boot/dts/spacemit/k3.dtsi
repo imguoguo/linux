@@ -1109,6 +1109,11 @@
 			#reset-cells = <1>;
 		};
 
+		syscon_qos: system-controller@d4282c00 {
+			compatible = "syscon";
+			reg = <0x0 0xd4282c00 0x0 0x200>;
+		};
+
 		syscon_dciu: system-controller@d8440000 {
 			compatible = "spacemit,k3-syscon-dciu";
 			reg = <0x0 0xd8440000 0x0 0xc000>;
