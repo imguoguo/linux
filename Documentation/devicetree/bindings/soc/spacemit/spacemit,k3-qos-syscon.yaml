@@ -1,0 +1,47 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/soc/spacemit/spacemit,k3-qos-syscon.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: SpacemiT K3 QoS System Controller
+
+maintainers:
+  - Cody Kang <cody.kang.hk@outlook.com>
+
+description:
+  Small system-control register block of the SpacemiT K3 SoC. It holds the
+  one-bit video mux that routes the DPU0 output to the eDP0 transmitter,
+  exposed as a generic mmio-mux child.
+
+properties:
+  compatible:
+    items:
+      - const: spacemit,k3-qos-syscon
+      - const: syscon
+      - const: simple-mfd
+
+  reg:
+    maxItems: 1
+
+  mux-controller:
+    $ref: /schemas/mux/reg-mux.yaml#
+
+required:
+  - compatible
+  - reg
+
+additionalProperties: false
+
+examples:
+  - |
+    system-controller@d4282c00 {
+        compatible = "spacemit,k3-qos-syscon", "syscon", "simple-mfd";
+        reg = <0xd4282c00 0x200>;
+
+        dpu_tx_mux: mux-controller {
+            compatible = "mmio-mux";
+            #mux-control-cells = <1>;
+            mux-reg-masks = <0x12c 0x100>;
+        };
+    };
