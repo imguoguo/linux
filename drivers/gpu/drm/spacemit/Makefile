@@ -10,3 +10,4 @@ spacemit-drm-y := 	spacemit_drm.o \
 				dpu/saturn_fbcmem.o \
 
 obj-$(CONFIG_DRM_SPACEMIT) += spacemit-drm.o
+obj-$(CONFIG_SPACEMIT_INNO_DP) += spacemit_inno_dp.o
